@@ -126,10 +126,18 @@ function handleCountryButtons() {
   contryButtons.forEach((button) => {
     button.addEventListener('click', () => addToFavorites(button.id));
   });
-  favoriteButtons.forEach((button) => {
+  favoritesButtons.forEach((button) => {
     button.addEventListener('click', () => removeFromFavorites(button.id));
   });
 
-  function addToFavorites(id) {}
+  function addToFavorites(id) {
+    const countryToAdd = allCountries.find((country) => country.id === id);
+    favoriteCountries = [...favoriteCountries, countryToAdd];
+    favoriteCountries.sort((a, b) => {
+      return a.name.localCompare(b.name);
+    });
+    allCountries = allCountries.filter((country) => country.id !== id);
+    render();
+  }
   function removeFromFavorites(id) {}
 }
