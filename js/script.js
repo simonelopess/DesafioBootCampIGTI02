@@ -30,11 +30,18 @@ async function fetchCountries() {
   const res = await fetch('https://restcountries.eu/rest/v2/all');
   const json = await res.json();
   allCountries = json.map((country) => {
-    const { numericCode, translations, population, flag } = country;
+    const {
+      numericCode,
+      translations,
+      population,
+      formattedPopulation,
+      flag,
+    } = country;
     return {
       id: numericCode,
       name: translations.pt,
       population,
+      formattedPopulation: formatNumber(population),
       flag,
     };
   });
@@ -53,7 +60,7 @@ function renderCountryList() {
   let countriesHTML = '<div>';
 
   allCountries.forEach((country) => {
-    const { name, flag, id, population } = country;
+    const { name, flag, id, population, formattedPopulation } = country;
 
     const countryHTML = `
     <div class='country'>
@@ -66,7 +73,7 @@ function renderCountryList() {
       <div>
         <ul>
           <li>${name}</li>
-          <li>${population}</li>
+          <li>${formattedPopulation}</li>
         </ul>
       </div>
     </div>
@@ -81,7 +88,7 @@ function renderFavorites() {
   let favoritesHTML = '<div>';
 
   favoriteCountries.forEach((country) => {
-    const { name, flag, id, population } = country;
+    const { name, flag, id, population, formattedPopulation } = country;
     const favoriteCountryHTML = `
     <div class='country'>
       <div>
@@ -93,7 +100,7 @@ function renderFavorites() {
       <div>
         <ul>
           <li>${name}</li>
-          <li>${population}</li>
+          <li>${formattedPopulation}</li>
         </ul>
       </div>
     </div>
@@ -115,8 +122,8 @@ function renderSummary() {
     return accumulator + current.population;
   }, 0);
 
-  totalPopulationList.textContent = totalPopulation;
-  totalPopulationFavorites.textContent = totalFavorites;
+  totalPopulationList.textContent = formatNumber(totalPopulation);
+  totalPopulationFavorites.textContent = formatNumber(totalFavorites);
 }
 
 function handleCountryButtons() {
@@ -134,10 +141,25 @@ function handleCountryButtons() {
     const countryToAdd = allCountries.find((country) => country.id === id);
     favoriteCountries = [...favoriteCountries, countryToAdd];
     favoriteCountries.sort((a, b) => {
-      return a.name.localCompare(b.name);
+      return a.name.localeCompare(b.name);
     });
     allCountries = allCountries.filter((country) => country.id !== id);
     render();
   }
-  function removeFromFavorites(id) {}
+  function removeFromFavorites(id) {
+    const countryToRemove = favoriteCountries.find(
+      (country) => country.id === id
+    );
+    allCountries = [...allCountries, countryToRemove];
+    allCountries.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
+    favoriteCountries = favoriteCountries.filter(
+      (country) => country.id !== id
+    );
+    render();
+  }
+}
+function formatNumber(number) {
+  return numberFormat.format(number);
 }
