@@ -73,6 +73,7 @@ function renderCountryList() {
 
     countriesHTML += countryHTML;
   });
+  countriesHTML += '</div>';
   tabCountries.innerHTML = countriesHTML;
 }
 function renderFavorites() {}
