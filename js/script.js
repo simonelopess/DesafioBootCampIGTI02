@@ -119,4 +119,17 @@ function renderSummary() {
   totalPopulationFavorites.textContent = totalFavorites;
 }
 
-function handleCountryButtons() {}
+function handleCountryButtons() {
+  const contryButtons = Array.from(tabCountries.querySelectorAll('.btn'));
+  const favoritesButtons = Array.from(tabFavorites.querySelectorAll('.btn'));
+
+  contryButtons.forEach((button) => {
+    button.addEventListener('click', () => addToFavorites(button.id));
+  });
+  favoriteButtons.forEach((button) => {
+    button.addEventListener('click', () => removeFromFavorites(button.id));
+  });
+
+  function addToFavorites(id) {}
+  function removeFromFavorites(id) {}
+}
